@@ -1,4 +1,4 @@
-package com.akjaw.test.refactor
+package com.akjaw.android.next.level.ktor
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,13 +11,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.akjaw.test.refactor.fruit.FruitListScreen
-import com.akjaw.test.refactor.fruit.FruitListViewModel
-import com.akjaw.test.refactor.fruit.FruitListViewModelFactory
-import com.akjaw.test.refactor.ui.theme.TestRefactorTheme
+import com.akjaw.android.next.level.ktor.fruit.FruitListScreen
+import com.akjaw.android.next.level.ktor.fruit.FruitListViewModel
+import com.akjaw.android.next.level.ktor.fruit.FruitListViewModelFactory
+import com.akjaw.android.next.level.ktor.ui.theme.FruitTheme
 
-// Either ViewModel crammed with everything  -> refactored to have better separation
-// Having a logically dense class -> refactoring its internal logic but the surface API is the same
 class MainActivity : ComponentActivity() {
 
     private val fruitListViewModel: FruitListViewModel by viewModels(factoryProducer = { FruitListViewModelFactory() })
@@ -25,7 +23,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TestRefactorTheme {
+            FruitTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
                     FruitListScreen(fruitListViewModel)
                 }
@@ -42,7 +40,7 @@ fun Greeting(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    TestRefactorTheme {
+    FruitTheme {
         Greeting("Android")
     }
 }

@@ -1,4 +1,4 @@
-package com.akjaw.test.refactor.fruit
+package com.akjaw.android.next.level.ktor.fruit
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,4 +1,4 @@
-package com.akjaw.test.refactor.fruit.model
+package com.akjaw.android.next.level.ktor.fruit.model
 
 data class Fruit(
     val name: String = "",

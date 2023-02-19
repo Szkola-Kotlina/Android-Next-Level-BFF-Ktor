@@ -1,4 +1,4 @@
-package com.akjaw.test.refactor.fruit
+package com.akjaw.android.next.level.ktor.fruit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,8 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.akjaw.test.refactor.fruit.FruitListViewModel.SortType
-import com.akjaw.test.refactor.fruit.model.Fruit
+import com.akjaw.android.next.level.ktor.fruit.FruitListViewModel.SortType
+import com.akjaw.android.next.level.ktor.fruit.model.Fruit
 
 @Composable
 fun FruitListScreen(viewModel: FruitListViewModel) {

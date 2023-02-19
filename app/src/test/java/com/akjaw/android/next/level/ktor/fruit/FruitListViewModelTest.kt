@@ -1,7 +1,7 @@
-package com.akjaw.test.refactor.fruit
+package com.akjaw.android.next.level.ktor.fruit
 
-import com.akjaw.test.refactor.fruit.model.Fruit
-import com.akjaw.test.refactor.fruit.model.Nutritions
+import com.akjaw.android.next.level.ktor.fruit.model.Fruit
+import com.akjaw.android.next.level.ktor.fruit.model.Nutritions
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -343,9 +343,6 @@ internal class FruitListViewModelTest {
             assertion(systemUnderTest.fruits.value)
         }
     }
-
-    // TODO split test class into multiple classes?
-    // TODO Other test some kind of selection tracker? where we can more easily extract logic classes?
 }
 
 class FakeFruitApi : FruitApi {
