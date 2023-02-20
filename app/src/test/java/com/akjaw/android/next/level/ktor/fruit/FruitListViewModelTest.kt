@@ -2,6 +2,8 @@ package com.akjaw.android.next.level.ktor.fruit
 
 import com.akjaw.android.next.level.ktor.fruit.model.Fruit
 import com.akjaw.android.next.level.ktor.fruit.model.Nutritions
+import com.akjaw.android.next.level.ktor.shared.model.FruitSchema
+import com.akjaw.android.next.level.ktor.shared.model.NutritionsSchema
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
