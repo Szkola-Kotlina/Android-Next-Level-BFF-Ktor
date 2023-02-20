@@ -12,12 +12,7 @@ import io.ktor.serialization.kotlinx.json.*
 import com.akjaw.android.next.level.ktor.shared.model.FruitSchema
 import kotlinx.serialization.json.Json
 
-interface FruitApi {
-
-    suspend fun getFruits(): List<FruitSchema>
-}
-
-class KtorFruitApi : FruitApi {
+class FruitApi {
 
     private val client = HttpClient(CIO) {
         expectSuccess = true
@@ -40,7 +35,7 @@ class KtorFruitApi : FruitApi {
         }
     }
 
-    override suspend fun getFruits(): List<FruitSchema> =
+    suspend fun getFruits(): List<FruitSchema> =
         try {
             val response = client.get("https://www.fruityvice.com/api/fruit/all")
             response.body()
