@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.akjaw.android.next.level.ktor.fruit.model.Fruit
 import com.akjaw.android.next.level.ktor.fruit.model.Nutritions
+import com.akjaw.android.next.level.ktor.shared.model.FruitSchema
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
