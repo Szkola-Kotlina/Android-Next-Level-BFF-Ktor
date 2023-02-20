@@ -9,25 +9,8 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.Serializable
+import com.akjaw.android.next.level.ktor.shared.model.FruitSchema
 import kotlinx.serialization.json.Json
-
-
-@Serializable
-data class FruitSchema(
-    val name: String = "",
-    val id: Int = -1,
-    val nutritions: NutritionsSchema = NutritionsSchema()
-)
-
-@Serializable
-data class NutritionsSchema(
-    val carbohydrates: Float = 0.0f,
-    val protein: Float = 0.0f,
-    val fat: Float = 0.0f,
-    val calories: Float = 0.0f,
-    val sugar: Float = 0.0f,
-)
 
 interface FruitApi {
 
