@@ -44,7 +44,9 @@ class KtorFruitApi : FruitApi {
 
     override suspend fun getFruits(): List<FruitSchema> =
         try {
-            val response = client.get("https://www.fruityvice.com/api/fruit/all")
+            // https://stackoverflow.com/questions/4779963/how-can-i-access-my-localhost-from-my-android-device
+            // adb reverse tcp:8080 tcp:8080
+            val response = client.get("http://0.0.0.0:8080/fruits")
             response.body()
         } catch (e: Exception) {
             Log.e("Ktor", e.stackTraceToString())
