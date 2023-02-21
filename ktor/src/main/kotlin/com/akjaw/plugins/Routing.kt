@@ -15,7 +15,6 @@ import kotlinx.serialization.Serializable
 
 fun Application.configureRouting() {
     val client = FruitApi()
-    install(Resources)
     routing {
         get("/") {
             call.respondText("Hello World!")
