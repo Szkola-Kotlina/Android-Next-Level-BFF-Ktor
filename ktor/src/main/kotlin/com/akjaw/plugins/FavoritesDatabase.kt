@@ -23,13 +23,21 @@ fun Application.configureFavoritesDatabases() {
         }
         post<FruitsFavorites> {
             val id = call.getId() ?: return@post
-            dao.addFavorite(id)
-            call.respond(HttpStatusCode.OK)
+            val result = dao.addFavorite(id)
+            if (result == null) {
+                call.respond(HttpStatusCode.BadRequest, "Fruit with id: $id already favorited")
+            } else {
+                call.respond(HttpStatusCode.OK)
+            }
         }
         delete<FruitsFavorites> {
             val id = call.getId() ?: return@delete
-            dao.removeFavorite(id)
-            call.respond(HttpStatusCode.OK)
+            val wasDeleted = dao.removeFavorite(id)
+            if (wasDeleted) {
+                call.respond(HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Fruit with id: $id does not exist")
+            }
         }
     }
 }

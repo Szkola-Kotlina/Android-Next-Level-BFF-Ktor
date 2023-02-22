@@ -10,8 +10,7 @@ fun createDatabase(): Database {
 }
 
 object FavoriteFruitEntity : Table() {
-    val id = integer("id").autoIncrement()
     val fruitId = integer("fruitId")
 
-    override val primaryKey: PrimaryKey = PrimaryKey(id)
+    override val primaryKey: PrimaryKey = PrimaryKey(fruitId)
 }
