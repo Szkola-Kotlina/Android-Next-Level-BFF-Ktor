@@ -2,15 +2,18 @@ package com.akjaw.fruit
 
 import com.akjaw.data.FavoriteFruitEntity
 import kotlinx.coroutines.Dispatchers
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
+import org.jetbrains.exposed.sql.AndOp
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.andIfNotNull
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.insertIgnore
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -26,24 +29,29 @@ class FavoriteFruitDao(
         }
     }
 
-    suspend fun getAllFavoriteIds(): List<Int> = dbQuery {
-        FavoriteFruitEntity.selectAll().map { row: ResultRow ->
+    suspend fun getAllFavoriteIds(userUuid: String): List<Int> = dbQuery {
+        FavoriteFruitEntity.select {
+            FavoriteFruitEntity.userUuid eq userUuid
+        }.map { row: ResultRow ->
             row[FavoriteFruitEntity.fruitId]
         }
     }
 
-    suspend fun addFavorite(fruitId: Int): InsertStatement<Number>? = dbQuery {
+    suspend fun addFavorite(userUuid: String, fruitId: Int): InsertStatement<Number>? = dbQuery {
         try {
             FavoriteFruitEntity.insert {
                 it[FavoriteFruitEntity.fruitId] = fruitId
+                it[FavoriteFruitEntity.userUuid] = userUuid
             }
         } catch (e: Exception) {
             null
         }
     }
 
-    suspend fun removeFavorite(fruitId: Int): Boolean = dbQuery {
-        val deletedAmount = FavoriteFruitEntity.deleteWhere { FavoriteFruitEntity.fruitId eq fruitId }
+    suspend fun removeFavorite(userUuid: String, fruitId: Int): Boolean = dbQuery {
+        val deletedAmount = FavoriteFruitEntity.deleteWhere {
+            AndOp(listOf(FavoriteFruitEntity.userUuid eq userUuid, FavoriteFruitEntity.fruitId eq fruitId))
+        }
         val wasDeleted = deletedAmount > 0
         wasDeleted
     }

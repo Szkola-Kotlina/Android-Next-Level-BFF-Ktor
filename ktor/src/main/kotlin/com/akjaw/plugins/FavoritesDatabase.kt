@@ -8,7 +8,9 @@ import io.ktor.resources.Resource
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
+import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.principal
 import io.ktor.server.resources.delete
 import io.ktor.server.resources.get
 import io.ktor.server.resources.post
@@ -21,12 +23,12 @@ fun Application.configureFavoritesDatabases() {
     routing {
         authenticate(favoriteAuthentication) {
             get<FruitsFavorites> {
-                val favorites = dao.getAllFavoriteIds()
+                val favorites = dao.getAllFavoriteIds(call.getUserUuid())
                 call.respond(favorites)
             }
             post<FruitsFavorites> {
                 val id = call.getFruitId() ?: return@post
-                val result = dao.addFavorite(id)
+                val result = dao.addFavorite(call.getUserUuid(), id)
                 if (result == null) {
                     call.respond(HttpStatusCode.BadRequest, "Fruit with id: $id already favorited")
                 } else {
@@ -35,7 +37,7 @@ fun Application.configureFavoritesDatabases() {
             }
             delete<FruitsFavorites> {
                 val id = call.getFruitId() ?: return@delete
-                val wasDeleted = dao.removeFavorite(id)
+                val wasDeleted = dao.removeFavorite(call.getUserUuid(), id)
                 if (wasDeleted) {
                     call.respond(HttpStatusCode.OK)
                 } else {
@@ -44,6 +46,10 @@ fun Application.configureFavoritesDatabases() {
             }
         }
     }
+}
+
+private fun ApplicationCall.getUserUuid(): String {
+    return principal<UserIdPrincipal>()!!.name
 }
 
 private suspend fun ApplicationCall.getFruitId(): Int? {
