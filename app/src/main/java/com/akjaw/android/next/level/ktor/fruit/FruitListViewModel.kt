@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class FruitListViewModelFactory : ViewModelProvider.Factory {
 
-    private val api = KtorFruitApi()
+    private val api = createFruitApi()
     private val favoriteRepository = FavoriteRepository()
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return modelClass.getConstructor(FruitApi::class.java, FavoriteRepository::class.java)

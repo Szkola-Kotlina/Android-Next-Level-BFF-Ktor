@@ -47,7 +47,7 @@ internal class FruitListViewModelTest {
     @Test
     @Ignore
     fun apiCall() = runTest(testDispatcher) {
-        val fruits = KtorFruitApi().getFruits()
+        val fruits = createOfficialFruitApi().getFruits()
         fruits shouldHaveSize 39
     }
 
