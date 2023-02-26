@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.Table
 
 fun createDatabase(): Database {
     val driverClassName = "org.h2.Driver"
-    val jdbcURL = "jdbc:h2:file:./ktor/build/db"
+    val jdbcURL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
     return Database.connect(jdbcURL, driverClassName)
 }
 

@@ -2,6 +2,8 @@ plugins {
     id 'org.jetbrains.kotlin.jvm'
     id 'io.ktor.plugin' version '2.2.3'
     id 'org.jetbrains.kotlin.plugin.serialization'
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.google.cloud.tools.appengine") version "2.4.2"
 }
 
 group "com.akjaw"
@@ -10,6 +12,18 @@ mainClassName = "com.akjaw.ApplicationKt"
 
 def isDevelopment = project.ext.has("development")
 applicationDefaultJvmArgs = ["-Dio.ktor.development=$isDevelopment"]
+
+// https://docs.gradle.org/current/userguide/migrating_from_groovy_to_kotlin_dsl.html
+appengine {
+    stage {
+        setArtifact("build/libs/${project.name}-all.jar")
+    }
+    deploy {
+        version = "GCLOUD_CONFIG"
+        projectId = "GCLOUD_CONFIG"
+        version = "1"
+    }
+}
 
 dependencies {
     implementation project(":shared")
