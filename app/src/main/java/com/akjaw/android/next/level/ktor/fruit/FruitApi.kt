@@ -36,17 +36,18 @@ fun createFruitApi(): FruitApi = createOfficialFruitApi()
 
 private fun createInternalFruitApi(): FruitApi {
     val client: HttpClient = createClient()
+    val baseUrl = "http://0.0.0.0:8080"
     return KtorFruitApi(
-        getFruitsApi = { client.get("http://0.0.0.0:8080/fruits").body() },
-        getFavoritesApi = { client.get("http://0.0.0.0:8080/fruits/favorites").body() },
+        getFruitsApi = { client.get("$baseUrl/fruits").body() },
+        getFavoritesApi = { client.get("$baseUrl/fruits/favorites").body() },
         addFavoriteApi = { fruitId ->
-            val response = client.post("http://0.0.0.0:8080/fruits/favorites") {
+            val response = client.post("$baseUrl/fruits/favorites") {
                 url { parameters.append("id", "$fruitId") }
             }
             response.status == HttpStatusCode.OK
         },
         removeFavoriteApi = { fruitId ->
-            val response = client.delete("http://0.0.0.0:8080/fruits/favorites") {
+            val response = client.delete("$baseUrl/fruits/favorites") {
                 url { parameters.append("id", "$fruitId") }
             }
             response.status == HttpStatusCode.OK
