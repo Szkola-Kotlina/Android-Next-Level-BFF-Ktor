@@ -5,9 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import com.akjaw.plugins.*
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.bearer
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.resources.Resources
 
 fun main() {
@@ -19,6 +21,9 @@ val favoriteAuthentication = "favoriteAuthentication"
 
 fun Application.module() {
     install(Resources)
+    install(ContentNegotiation) {
+        json()
+    }
     install(Authentication) {
         bearer(favoriteAuthentication) {
             realm = "Access to the '/fruits/favorites' path"
@@ -31,7 +36,6 @@ fun Application.module() {
             }
         }
     }
-    configureSerialization()
     configureFavoritesDatabases()
     configureRouting()
 }
