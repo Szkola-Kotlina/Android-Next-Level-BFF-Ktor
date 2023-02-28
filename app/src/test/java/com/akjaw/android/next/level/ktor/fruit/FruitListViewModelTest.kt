@@ -36,7 +36,7 @@ internal class FruitListViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         fakeFruitApi = FakeFruitApi()
-        systemUnderTest = FruitListViewModel(fakeFruitApi)
+        systemUnderTest = FruitListViewModel(fakeFruitApi, FavoriteCache(fakeFruitApi))
     }
 
     @After
@@ -47,7 +47,7 @@ internal class FruitListViewModelTest {
     @Test
     @Ignore
     fun apiCall() = runTest(testDispatcher) {
-        val fruits = createOfficialFruitApi().getFruits()
+        val fruits = createFruitApi().getFruits()
         fruits shouldHaveSize 39
     }
 
@@ -349,7 +349,17 @@ internal class FruitListViewModelTest {
 
 class FakeFruitApi : FruitApi {
 
+    var favorites: MutableList<Int> = mutableListOf()
     var fruits: List<FruitSchema> = emptyList()
 
     override suspend fun getFruits(): List<FruitSchema> = fruits
+    override suspend fun getFavorites(): List<Int> = favorites
+
+    var shouldAddFail = false
+    override suspend fun addFavorite(fruitId: Int): Boolean =
+        if (shouldAddFail) false else favorites.add(fruitId)
+
+    var shouldRemoveFail = false
+    override suspend fun removeFavorite(fruitId: Int): Boolean =
+        if (shouldRemoveFail) false else favorites.remove(fruitId)
 }
