@@ -16,16 +16,16 @@ import kotlinx.coroutines.launch
 class FruitListViewModelFactory : ViewModelProvider.Factory {
 
     private val api = createFruitApi()
-    private val favoriteRepository = FavoriteRepository()
+    private val favoriteCache = FavoriteCache(api)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return modelClass.getConstructor(FruitApi::class.java, FavoriteRepository::class.java)
-            .newInstance(api, favoriteRepository)
+        return modelClass.getConstructor(FruitApi::class.java, FavoriteCache::class.java)
+            .newInstance(api, favoriteCache)
     }
 }
 
 class FruitListViewModel(
     private val fruitApi: FruitApi,
-    private val favoriteRepository: FavoriteRepository = FavoriteRepository(),
+    private val favoriteCache: FavoriteCache,
 ) : ViewModel() {
 
     enum class SortType {
@@ -40,7 +40,7 @@ class FruitListViewModel(
     private val originalFruits: MutableStateFlow<List<FruitSchema>> = MutableStateFlow(emptyList())
     private val currentSearchQuery: MutableStateFlow<String> = MutableStateFlow("")
     private val currentNutritionSort: MutableStateFlow<SortType> = MutableStateFlow(SortType.NO_SORTING)
-    private val favoriteFruitIds: StateFlow<List<Int>> = favoriteRepository.favoriteFruitIds
+    private val favoriteFruitIds: StateFlow<List<Int>> = favoriteCache.favoriteFruitIds
     val fruits: StateFlow<List<Fruit>> =
         combine(
             originalFruits,
@@ -51,6 +51,7 @@ class FruitListViewModel(
         ).stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     fun initialize() = viewModelScope.launch {
+        favoriteCache.initialize()
         originalFruits.value = fruitApi.getFruits()
     }
 
@@ -63,7 +64,9 @@ class FruitListViewModel(
     }
 
     fun updateFavorite(fruitId: Int) {
-        favoriteRepository.updateFavorite(fruitId)
+        viewModelScope.launch {
+            favoriteCache.updateFavorite(fruitId)
+        }
     }
 
     private fun transform(
