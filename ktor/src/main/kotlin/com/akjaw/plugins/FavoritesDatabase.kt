@@ -7,7 +7,9 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.resources.Resource
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.application
 import io.ktor.server.application.call
+import io.ktor.server.application.log
 import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.principal
@@ -37,6 +39,7 @@ fun Application.configureFavoritesDatabases() {
                 }
             }
             delete<FruitsFavorites> { favoriteResource ->
+                throw IllegalStateException("Some delete error")
                 val id = favoriteResource.id ?: return@delete respondWithBadIdError()
                 val wasDeleted = dao.removeFavorite(call.getUserUuid(), id)
                 if (wasDeleted) {
@@ -50,6 +53,7 @@ fun Application.configureFavoritesDatabases() {
 }
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.respondWithBadIdError() {
+    application.log.error("id is not valid")
     call.respond(HttpStatusCode.BadRequest, "id is not valid")
 }
 
