@@ -25,6 +25,10 @@ appengine {
     }
 }
 
+shadowJar {
+    mergeServiceFiles()
+}
+
 dependencies {
     implementation project(":shared")
     implementation "io.ktor:ktor-server-core-jvm:$ktor_version"
@@ -36,6 +40,11 @@ dependencies {
     implementation "io.ktor:ktor-client-logging:$ktor_version"
     implementation "io.ktor:ktor-server-auth:$ktor_version"
     implementation "io.ktor:ktor-server-call-logging:$ktor_version"
+    implementation "ch.qos.logback:logback-classic:1.4.5"
+    implementation "org.codehaus.janino:janino:3.1.9"
+    implementation "org.apache.logging.log4j:log4j-core:2.17.1"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.17.1"
+    implementation 'com.google.cloud:google-cloud-logging-logback:0.130.6-alpha'
     implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
     implementation "org.jetbrains.exposed:exposed-dao:$exposed_version"
     implementation "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
