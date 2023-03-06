@@ -1,8 +1,8 @@
-package com.akjaw.android.next.level.ktor.fruit
+package com.akjaw.android.next.level.bff.android.fruit
 
 import android.util.Log
-import com.akjaw.android.next.level.ktor.shared.authentication.VALID_USERS
-import com.akjaw.android.next.level.ktor.shared.model.FruitSchema
+import com.akjaw.android.next.level.bff.shared.authentication.VALID_USERS
+import com.akjaw.android.next.level.bff.shared.model.FruitSchema
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -16,7 +16,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json

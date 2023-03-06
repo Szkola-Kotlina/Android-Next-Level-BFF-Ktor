@@ -1,4 +1,4 @@
-package com.akjaw.android.next.level.ktor.shared.authentication
+package com.akjaw.android.next.level.bff.shared.authentication
 
 val VALID_USERS = listOf(
     "7f927f35-a215-4e3a-a09d-cb02d4691680",

@@ -1,4 +1,4 @@
-package com.akjaw.android.next.level.ktor.fruit
+package com.akjaw.android.next.level.bff.android.fruit
 
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.runTest

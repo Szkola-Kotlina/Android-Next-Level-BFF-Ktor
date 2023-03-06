@@ -1,4 +1,4 @@
-package com.akjaw.android.next.level.ktor.fruit
+package com.akjaw.android.next.level.bff.android.fruit
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

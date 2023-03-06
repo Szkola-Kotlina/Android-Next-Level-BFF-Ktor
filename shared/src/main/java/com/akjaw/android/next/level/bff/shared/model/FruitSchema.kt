@@ -1,4 +1,4 @@
-package com.akjaw.android.next.level.ktor.shared.model
+package com.akjaw.android.next.level.bff.shared.model
 
 import kotlinx.serialization.Serializable
 

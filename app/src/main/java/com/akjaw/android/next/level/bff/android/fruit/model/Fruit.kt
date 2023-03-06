@@ -1,4 +1,4 @@
-package com.akjaw.android.next.level.ktor.fruit.model
+package com.akjaw.android.next.level.bff.android.fruit.model
 
 data class Fruit(
     val name: String = "",

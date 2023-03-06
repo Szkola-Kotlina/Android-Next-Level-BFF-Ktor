@@ -1,4 +1,4 @@
-package com.akjaw.android.next.level.ktor
+package com.akjaw.android.next.level.bff.android
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,10 +11,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.akjaw.android.next.level.ktor.fruit.FruitListScreen
-import com.akjaw.android.next.level.ktor.fruit.FruitListViewModel
-import com.akjaw.android.next.level.ktor.fruit.FruitListViewModelFactory
-import com.akjaw.android.next.level.ktor.ui.theme.FruitTheme
+import com.akjaw.android.next.level.bff.android.fruit.FruitListScreen
+import com.akjaw.android.next.level.bff.android.fruit.FruitListViewModel
+import com.akjaw.android.next.level.bff.android.fruit.FruitListViewModelFactory
+import com.akjaw.android.next.level.bff.android.ui.theme.FruitTheme
 
 class MainActivity : ComponentActivity() {
 

@@ -1,4 +1,4 @@
-package com.akjaw.android.next.level.ktor.ui.theme
+package com.akjaw.android.next.level.bff.android.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

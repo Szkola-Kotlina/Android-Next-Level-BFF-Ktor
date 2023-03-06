@@ -11,7 +11,7 @@ android {
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.akjaw.android.next.level.ktor"
+        applicationId = "com.akjaw.android.next.level.bff.android"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
