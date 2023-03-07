@@ -1,17 +1,15 @@
 package com.akjaw.plugins
 
 import com.akjaw.android.next.level.bff.shared.model.FruitSchema
+import com.akjaw.plugins.OfficialFruitApi.Companion.createHttpClient
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.request.headers
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.resources.*
@@ -22,26 +20,29 @@ import kotlinx.serialization.Serializable
 import io.ktor.server.application.*
 import kotlinx.serialization.json.Json
 
-class OfficialFruitApi {
+class OfficialFruitApi(private val client: HttpClient) {
 
-    private val client = HttpClient(CIO) {
-        expectSuccess = true
-        install(Logging) {
-            logger = object : Logger {
-                override fun log(message: String) {
-                    println(message)
+    companion object {
+
+        fun createHttpClient() = HttpClient(CIO) {
+            expectSuccess = true
+            install(Logging) {
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        println(message)
+                    }
                 }
+                level = LogLevel.ALL
             }
-            level = LogLevel.ALL
-        }
-        install(ContentNegotiation) {
-            json(
-                Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                }
-            )
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        prettyPrint = true
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                    }
+                )
+            }
         }
     }
 
@@ -55,8 +56,8 @@ class OfficialFruitApi {
         }
 }
 
-fun Application.configureRouting() {
-    val officialApi = OfficialFruitApi()
+fun Application.configureRouting(httpClient: HttpClient = createHttpClient()) {
+    val officialApi = OfficialFruitApi(httpClient)
     install(Resources)
     routing {
         get("/") {
