@@ -22,36 +22,48 @@ import kotlinx.serialization.Serializable
 import io.ktor.server.application.*
 import kotlinx.serialization.json.Json
 
-private fun createClient() = HttpClient(CIO) {
-    expectSuccess = true
-    install(Logging) {
-        logger = object : Logger {
-            override fun log(message: String) {
-                println(message)
+class OfficialFruitApi {
+
+    private val client = HttpClient(CIO) {
+        expectSuccess = true
+        install(Logging) {
+            logger = object : Logger {
+                override fun log(message: String) {
+                    println(message)
+                }
             }
+            level = LogLevel.ALL
         }
-        level = LogLevel.ALL
+        install(ContentNegotiation) {
+            json(
+                Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                }
+            )
+        }
     }
-    install(ContentNegotiation) {
-        json(
-            Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            }
-        )
-    }
+
+    suspend fun getFruits(): List<FruitSchema> =
+        try {
+            val response = client.get("https://www.fruityvice.com/api/fruit/all")
+            response.body()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
 }
 
 fun Application.configureRouting() {
-    val client = createClient()
+    val officialApi = OfficialFruitApi()
     install(Resources)
     routing {
         get("/") {
             call.respondText("Hello World!")
         }
         get<Fruits> {
-            val fruits: List<FruitSchema> = client.get("https://www.fruityvice.com/api/fruit/all").body()
+            val fruits: List<FruitSchema> = officialApi.getFruits()
             call.respond(fruits)
         }
     }
