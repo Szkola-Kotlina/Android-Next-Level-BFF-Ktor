@@ -10,7 +10,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.*
 import io.ktor.server.resources.*
 import io.ktor.resources.*
@@ -18,6 +18,9 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.resources.Resources
 import kotlinx.serialization.Serializable
 import io.ktor.server.application.*
+import io.ktor.server.routing.delete
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 
 class OfficialFruitApi(private val client: HttpClient) {
@@ -67,9 +70,24 @@ fun Application.configureRouting(httpClient: HttpClient = createHttpClient()) {
             val fruits: List<FruitSchema> = officialApi.getFruits()
             call.respond(fruits)
         }
+        get<Fruits.Favorites> {
+            call.respondText("Favorites get!")
+        }
+        post<Fruits.Favorites> { favorites ->
+            val id = favorites.id ?: return@post call.respond(HttpStatusCode.BadRequest, "Id is missing")
+            call.respondText("Favorites post ${id}!")
+        }
+        delete<Fruits.Favorites> { favorites ->
+            val id = favorites.id ?: return@delete call.respond(HttpStatusCode.BadRequest, "Id is missing")
+            call.respondText("Favorites delete ${id}!")
+        }
     }
 }
 
 @Serializable
 @Resource("/fruits")
-class Fruits
+class Fruits {
+
+    @Resource("favorites")
+    class Favorites(val parent: Fruits = Fruits(), val id: Int? = null)
+}
