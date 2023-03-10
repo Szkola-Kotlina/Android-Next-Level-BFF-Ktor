@@ -1,11 +1,52 @@
 package com.akjaw.plugins
 
+import com.akjaw.plugins.UserService.Users.autoIncrement
 import org.jetbrains.exposed.sql.*
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.Dispatchers
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
+
+object FruitFavorites : Table() {
+    val id = integer("id")
+
+    override val primaryKey = PrimaryKey(id)
+}
+
+class FruitsFavoritesDao {
+    val database = Database.connect(
+        url = "jdbc:h2:file:./ktor/build/db",
+        driver = "org.h2.Driver",
+    )
+
+    init {
+        transaction(database) {
+            SchemaUtils.create(FruitFavorites)
+        }
+    }
+
+    suspend fun getAllFavorites(): List<Int> = dbQuery {
+        FruitFavorites.selectAll().map { row -> row[FruitFavorites.id] }
+    }
+
+    suspend fun insertFavorite(id: Int) = dbQuery {
+        FruitFavorites.insert {
+            it[FruitFavorites.id] = id
+        }
+    }
+
+    suspend fun deleteFavorite(id: Int) = dbQuery {
+        FruitFavorites.deleteWhere { FruitFavorites.id eq id }
+    }
+
+    private suspend fun <T> dbQuery(block: suspend () -> T): T =
+        newSuspendedTransaction(Dispatchers.IO) { block() }
+}
 
 fun Application.configureDatabases() {
     val database = Database.connect(

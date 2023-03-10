@@ -18,7 +18,6 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.resources.Resources
 import kotlinx.serialization.Serializable
 import io.ktor.server.application.*
-import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
@@ -61,6 +60,7 @@ class OfficialFruitApi(private val client: HttpClient) {
 
 fun Application.configureRouting(httpClient: HttpClient = createHttpClient()) {
     val officialApi = OfficialFruitApi(httpClient)
+    val favoritesDao = FruitsFavoritesDao()
     install(Resources)
     routing {
         get("/") {
@@ -71,14 +71,16 @@ fun Application.configureRouting(httpClient: HttpClient = createHttpClient()) {
             call.respond(fruits)
         }
         get<Fruits.Favorites> {
-            call.respondText("Favorites get!")
+            call.respond(favoritesDao.getAllFavorites())
         }
         post<Fruits.Favorites> { favorites ->
             val id = favorites.id ?: return@post call.respond(HttpStatusCode.BadRequest, "Id is missing")
+            favoritesDao.insertFavorite(id)
             call.respondText("Favorites post ${id}!")
         }
         delete<Fruits.Favorites> { favorites ->
             val id = favorites.id ?: return@delete call.respond(HttpStatusCode.BadRequest, "Id is missing")
+            favoritesDao.deleteFavorite(id)
             call.respondText("Favorites delete ${id}!")
         }
     }
