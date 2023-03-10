@@ -75,13 +75,21 @@ fun Application.configureRouting(httpClient: HttpClient = createHttpClient()) {
         }
         post<Fruits.Favorites> { favorites ->
             val id = favorites.id ?: return@post call.respond(HttpStatusCode.BadRequest, "Id is missing")
-            favoritesDao.insertFavorite(id)
-            call.respondText("Favorites post ${id}!")
+            val wasInserted = favoritesDao.insertFavorite(id)
+            if (wasInserted != null) {
+                call.respondText("Favorite $id added")
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Favorite $id already exists")
+            }
         }
         delete<Fruits.Favorites> { favorites ->
             val id = favorites.id ?: return@delete call.respond(HttpStatusCode.BadRequest, "Id is missing")
-            favoritesDao.deleteFavorite(id)
-            call.respondText("Favorites delete ${id}!")
+            val wasDeleted = favoritesDao.deleteFavorite(id)
+            if (wasDeleted) {
+                call.respondText("Favorite with $id deleted")
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Favorite with $id does not exist")
+            }
         }
     }
 }
