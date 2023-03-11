@@ -76,11 +76,11 @@ fun Application.configureRouting(httpClient: HttpClient = createHttpClient()) {
         }
         authenticate(favoriteAuthentication) {
             get<Fruits.Favorites> {
-                call.respond(favoritesDao.getAllFavorites())
+                call.respond(favoritesDao.getAllFavorites(getUserId()))
             }
             post<Fruits.Favorites> { favorites ->
                 val id = favorites.id ?: return@post call.respond(HttpStatusCode.BadRequest, "Id is missing")
-                val wasInserted = favoritesDao.insertFavorite(id)
+                val wasInserted = favoritesDao.insertFavorite(getUserId(), id)
                 if (wasInserted != null) {
                     call.respondText("Favorite $id added")
                 } else {
@@ -89,7 +89,7 @@ fun Application.configureRouting(httpClient: HttpClient = createHttpClient()) {
             }
             delete<Fruits.Favorites> { favorites ->
                 val id = favorites.id ?: return@delete call.respond(HttpStatusCode.BadRequest, "Id is missing")
-                val wasDeleted = favoritesDao.deleteFavorite(id)
+                val wasDeleted = favoritesDao.deleteFavorite(getUserId(), id)
                 if (wasDeleted) {
                     call.respondText("Favorite with $id deleted")
                 } else {

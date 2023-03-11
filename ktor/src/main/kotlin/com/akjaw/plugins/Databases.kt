@@ -9,8 +9,9 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 object FruitFavorites : Table() {
     val id = integer("id")
+    val userUuid = varchar("userUuid", 128)
 
-    override val primaryKey = PrimaryKey(id)
+    override val primaryKey = PrimaryKey(id, userUuid)
 }
 
 class FruitsFavoritesDao {
@@ -25,23 +26,26 @@ class FruitsFavoritesDao {
         }
     }
 
-    suspend fun getAllFavorites(): List<Int> = dbQuery {
-        FruitFavorites.selectAll().map { row -> row[FruitFavorites.id] }
+    suspend fun getAllFavorites(userUuid: String): List<Int> = dbQuery {
+        FruitFavorites
+            .select { FruitFavorites.userUuid eq userUuid }
+            .map { row -> row[FruitFavorites.id] }
     }
 
-    suspend fun insertFavorite(id: Int): InsertStatement<Number>? = dbQuery {
+    suspend fun insertFavorite(userUuid: String, id: Int): InsertStatement<Number>? = dbQuery {
         try {
             FruitFavorites.insert {
                 it[FruitFavorites.id] = id
+                it[FruitFavorites.userUuid] = userUuid
             }
         } catch (e: Exception) {
             null
         }
     }
 
-    suspend fun deleteFavorite(id: Int): Boolean = dbQuery {
+    suspend fun deleteFavorite(userUuid: String, id: Int): Boolean = dbQuery {
         val amount = FruitFavorites.deleteWhere {
-            FruitFavorites.id eq id
+            AndOp(listOf(FruitFavorites.userUuid eq userUuid, FruitFavorites.id eq id))
         }
         amount > 0
     }
