@@ -18,8 +18,12 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.resources.Resources
 import kotlinx.serialization.Serializable
 import io.ktor.server.application.*
+import io.ktor.server.auth.UserIdPrincipal
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.principal
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import io.ktor.util.pipeline.PipelineContext
 import kotlinx.serialization.json.Json
 
 class OfficialFruitApi(private val client: HttpClient) {
@@ -70,29 +74,34 @@ fun Application.configureRouting(httpClient: HttpClient = createHttpClient()) {
             val fruits: List<FruitSchema> = officialApi.getFruits()
             call.respond(fruits)
         }
-        get<Fruits.Favorites> {
-            call.respond(favoritesDao.getAllFavorites())
-        }
-        post<Fruits.Favorites> { favorites ->
-            val id = favorites.id ?: return@post call.respond(HttpStatusCode.BadRequest, "Id is missing")
-            val wasInserted = favoritesDao.insertFavorite(id)
-            if (wasInserted != null) {
-                call.respondText("Favorite $id added")
-            } else {
-                call.respond(HttpStatusCode.BadRequest, "Favorite $id already exists")
+        authenticate(favoriteAuthentication) {
+            get<Fruits.Favorites> {
+                call.respond(favoritesDao.getAllFavorites())
             }
-        }
-        delete<Fruits.Favorites> { favorites ->
-            val id = favorites.id ?: return@delete call.respond(HttpStatusCode.BadRequest, "Id is missing")
-            val wasDeleted = favoritesDao.deleteFavorite(id)
-            if (wasDeleted) {
-                call.respondText("Favorite with $id deleted")
-            } else {
-                call.respond(HttpStatusCode.BadRequest, "Favorite with $id does not exist")
+            post<Fruits.Favorites> { favorites ->
+                val id = favorites.id ?: return@post call.respond(HttpStatusCode.BadRequest, "Id is missing")
+                val wasInserted = favoritesDao.insertFavorite(id)
+                if (wasInserted != null) {
+                    call.respondText("Favorite $id added")
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "Favorite $id already exists")
+                }
+            }
+            delete<Fruits.Favorites> { favorites ->
+                val id = favorites.id ?: return@delete call.respond(HttpStatusCode.BadRequest, "Id is missing")
+                val wasDeleted = favoritesDao.deleteFavorite(id)
+                if (wasDeleted) {
+                    call.respondText("Favorite with $id deleted")
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "Favorite with $id does not exist")
+                }
             }
         }
     }
 }
+
+private fun PipelineContext<Unit, ApplicationCall>.getUserId() =
+    call.principal<UserIdPrincipal>()?.name!!
 
 @Serializable
 @Resource("/fruits")
