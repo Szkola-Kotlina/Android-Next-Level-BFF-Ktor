@@ -16,7 +16,7 @@ object FruitFavorites : Table() {
 
 class FruitsFavoritesDao {
     private val database = Database.connect(
-        url = "jdbc:h2:file:./ktor/build/db",
+        url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
         driver = "org.h2.Driver",
     )
 
