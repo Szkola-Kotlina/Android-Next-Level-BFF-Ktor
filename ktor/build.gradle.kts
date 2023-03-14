@@ -28,7 +28,7 @@ configure<AppEngineAppYamlExtension> {
         setArtifact("build/libs/${project.name}-all.jar")
     }
     deploy {
-        version = "GCLOUD_CONFIG"
+        version = "1"
         projectId = "GCLOUD_CONFIG"
     }
 }
