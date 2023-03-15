@@ -1,12 +1,31 @@
-<configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    <root level="trace">
-        <appender-ref ref="STDOUT"/>
-    </root>
-    <logger name="org.eclipse.jetty" level="INFO"/>
-    <logger name="io.netty" level="INFO"/>
+<configuration debug="true">
+    <if condition='isDefined("IS_DEPLOYED")'>
+        <then>
+            <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
+                <!-- Optional : filter logs at or above a level -->
+                <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                    <level>INFO</level>
+                </filter>
+                <log>application.log</log> <!-- Optional : default java.log -->
+                <resourceType>gae_app</resourceType> <!-- Optional : default: auto-detected, fallback: global -->
+                <enhancer>com.example.logging.logback.enhancers.ExampleEnhancer</enhancer> <!-- Optional -->
+            </appender>
+
+            <root level="info">
+                <appender-ref ref="CLOUD"/>
+            </root>
+        </then>
+        <else>
+            <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder>
+                    <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+                </encoder>
+            </appender>
+            <root level="trace">
+                <appender-ref ref="STDOUT"/>
+            </root>
+            <logger name="org.eclipse.jetty" level="INFO"/>
+            <logger name="io.netty" level="INFO"/>
+        </else>
+    </if>
 </configuration>

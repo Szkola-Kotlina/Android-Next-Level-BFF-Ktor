@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlExtension
 
 val ktor_version: String by project
@@ -33,6 +34,10 @@ configure<AppEngineAppYamlExtension> {
     }
 }
 
+tasks.named<ShadowJar>("shadowJar") {
+    mergeServiceFiles()
+}
+
 dependencies {
     implementation(project(":shared"))
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
@@ -44,6 +49,11 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-client-logging:$ktor_version")
+    implementation("ch.qos.logback:logback-classic:1.4.5")
+    implementation("org.codehaus.janino:janino:3.1.9")
+    implementation("org.apache.logging.log4j:log4j-core:2.17.1")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.1")
+    implementation("com.google.cloud:google-cloud-logging-logback:0.130.6-alpha")
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("com.h2database:h2:$h2_version")

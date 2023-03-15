@@ -79,25 +79,32 @@ fun Application.configureRouting(httpClient: HttpClient = createHttpClient()) {
                 call.respond(favoritesDao.getAllFavorites(getUserId()))
             }
             post<Fruits.Favorites> { favorites ->
-                val id = favorites.id ?: return@post call.respond(HttpStatusCode.BadRequest, "Id is missing")
+                val id = favorites.id ?: return@post respondWithBadId()
                 val wasInserted = favoritesDao.insertFavorite(getUserId(), id)
                 if (wasInserted != null) {
                     call.respondText("Favorite $id added")
                 } else {
+                    application.log.warn("Favorite $id already exists")
                     call.respond(HttpStatusCode.BadRequest, "Favorite $id already exists")
                 }
             }
             delete<Fruits.Favorites> { favorites ->
-                val id = favorites.id ?: return@delete call.respond(HttpStatusCode.BadRequest, "Id is missing")
+                val id = favorites.id ?: return@delete respondWithBadId()
                 val wasDeleted = favoritesDao.deleteFavorite(getUserId(), id)
                 if (wasDeleted) {
                     call.respondText("Favorite with $id deleted")
                 } else {
+                    throw IllegalStateException("Favorite with $id does not exist")
                     call.respond(HttpStatusCode.BadRequest, "Favorite with $id does not exist")
                 }
             }
         }
     }
+}
+
+private suspend fun PipelineContext<Unit, ApplicationCall>.respondWithBadId() {
+    application.log.error("Id is missing")
+    call.respond(HttpStatusCode.BadRequest, "Id is missing")
 }
 
 private fun PipelineContext<Unit, ApplicationCall>.getUserId() =
